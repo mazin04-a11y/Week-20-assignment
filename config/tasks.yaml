@@ -1,19 +1,44 @@
 # config/tasks.yaml
-# Task instructions — update task descriptions here without touching code.
+# Task instructions — update descriptions here without touching code.
 # Week 18 pattern: separate the "what and how" from the orchestration logic.
+# All descriptions support {user_topic} placeholder.
 
 research_task:
   description: >
-    Research the following topic thoroughly: {topic}.
-    Gather key facts, recent developments, important insights, and credible sources.
+    Research the following topic thoroughly: '{user_topic}'.
+    Use web search to find recent, accurate information.
+    Identify at least 3 key findings with their sources.
+    Save important context to the Semantic Vault using the Context Writer Tool.
   expected_output: >
-    A detailed summary (400-600 words) covering key facts, insights, and sources
-    on the topic. Include at least 3 distinct findings.
+    A structured research summary containing:
+    1. At least 3 key findings with sources
+    2. Recent developments (last 12 months)
+    3. Any relevant data points or statistics
+
+analysis_task:
+  description: >
+    Analyse the research findings on '{user_topic}'.
+    Query the knowledge database for any related stored facts.
+    Cross-reference web findings with database records.
+    Identify patterns, gaps, and key insights.
+    Use SUM() for any numerical aggregations — never estimate.
+  expected_output: >
+    A structured analysis report containing:
+    1. Key patterns and insights from the research
+    2. Any grounded facts retrieved from the database
+    3. Identified gaps or areas requiring caution
+    4. Confidence level for each major claim (High/Medium/Low)
 
 writing_task:
   description: >
-    Using the research provided as context, write a concise and engaging report on: {topic}.
-    Structure the report with an introduction, main findings, and a conclusion.
+    Write a professional report on '{user_topic}' using the research
+    and analysis provided in context.
+    Structure: Introduction → Key Findings → Analysis → Conclusion.
+    Every claim must be traceable to the context provided.
+    Target length: 400-600 words. Professional tone.
   expected_output: >
-    A well-structured, professional report (300-500 words) ready to publish.
-    Must include: introduction, 2-3 key findings with supporting detail, and a conclusion.
+    A complete, publication-ready report (400-600 words) with:
+    1. Introduction (what and why)
+    2. Key Findings (at least 3, with supporting detail)
+    3. Analysis (patterns, implications)
+    4. Conclusion (summary and next steps)

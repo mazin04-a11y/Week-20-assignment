@@ -9,3 +9,6 @@ build/
 .venv/
 venv/
 *.log
+context_notes.txt
+memory.db
+*.db
