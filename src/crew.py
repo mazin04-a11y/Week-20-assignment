@@ -43,7 +43,7 @@ from pydantic import BaseModel
 # All tools inherit BaseTool — strict type-checking, no raw functions.
 # SafeQueryTool enforces READ-ONLY access (Layer 2 Guardrail).
 from crewai.tools import BaseTool
-from crewai_tools import FileReadTool, SerperDevTool, FileWriteTool
+from crewai_tools import FileReadTool, SerperDevTool
 
 from src.tools.custom_tools import SafeQueryTool, WebScraperTool, ContextWriterTool
 from src.tools.database     import setup_knowledge_db, save_run
@@ -100,7 +100,6 @@ def build_crew(user_topic: str) -> Crew:
     # ── Tools: each agent gets only the tools it needs (least privilege) ──────
     search_tool      = SerperDevTool()                              # Web search (Week 11)
     file_read_tool   = FileReadTool(file_path="context_notes.txt") # Semantic Vault (Week 14)
-    file_write_tool  = FileWriteTool()                             # Output artifact writer
     sql_tool         = SafeQueryTool()                             # Read-only DB access (Week 14)
     scraper_tool     = WebScraperTool()                            # Direct URL fetcher (Week 7)
     ctx_writer_tool  = ContextWriterTool()                         # Qualitative memory writer
@@ -131,7 +130,7 @@ def build_crew(user_topic: str) -> Crew:
         role     = agents_cfg["writer"]["role"],
         goal     = agents_cfg["writer"]["goal"],
         backstory= agents_cfg["writer"]["backstory"],
-        tools    = [file_write_tool, ctx_writer_tool],
+        tools    = [ctx_writer_tool],
         verbose  = True,
         allow_delegation = False,
     )
@@ -176,8 +175,7 @@ def build_crew(user_topic: str) -> Crew:
     knowledge_assistant = Crew(
         agents     = [researcher, analyst, writer],
         tasks      = [research_task, analysis_task, writing_task],
-        process    = Process.hierarchical,   # True branching + Manager oversight (Week 13)
-        manager_llm= "gpt-4o",              # The implicit 'Boss' — plans & reviews
+        process    = Process.sequential,     # Sequential: R → A → W (stable in current CrewAI)
         memory     = True,                  # Semantic Memory Layer (Week 14)
         embedder   = {
             "provider": "openai",

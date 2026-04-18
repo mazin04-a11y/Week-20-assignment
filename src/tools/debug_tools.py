@@ -20,6 +20,10 @@ import platform
 from pathlib import Path
 from datetime import datetime
 from typing import Optional
+from dotenv import load_dotenv
+
+# Load .env so API key checks work correctly
+load_dotenv(Path(__file__).parent.parent.parent / ".env")
 
 # ── Logger (reuse from resilience.py pattern) ─────────────────────────────────
 logger = logging.getLogger(__name__)
@@ -48,7 +52,8 @@ def run_smoke_test() -> dict:
     )
 
     # ── Check 2: Required env vars (ID Badge Protocol) ────────────────────────
-    for key in ["OPENAI_API_KEY", "ANTHROPIC_API_KEY", "SERPER_API_KEY"]:
+    # ANTHROPIC_API_KEY is optional — project runs on OpenAI + Serper only
+    for key in ["OPENAI_API_KEY", "SERPER_API_KEY"]:
         val = os.environ.get(key, "")
         results[f"Env: {key}"] = (
             bool(val),

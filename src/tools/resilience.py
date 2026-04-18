@@ -16,7 +16,7 @@ import time
 import random
 import json
 import logging
-from typing import Callable, Any, Optional
+from typing import Callable, Any, Optional, List
 from pydantic import BaseModel, ValidationError
 from crewai import Agent, Task
 
@@ -60,8 +60,8 @@ def execute_with_retry(api_call_func: Callable, max_retries: int = 3) -> Any:
             )
             time.sleep(wait_time)
 
-    # Final fallback — all retries exhausted
-    raise Exception("Layer 1 Failure: Max retries exceeded. Check API status.")
+    # Final fallback — all retries exhausted, surface the last real error
+    raise Exception(f"Layer 1 Failure: Max retries exceeded. Last error: {e}")
 
 
 ## ---- Layer 2: Budgetary Caps — Denial of Wallet Prevention (Week 15) ----
@@ -112,11 +112,11 @@ class StructuredReport(BaseModel):
     structured data. 'Trust, but Verify' — the schema is the contract.
     Used with Task(output_json=StructuredReport) to auto-enforce format.
     """
-    title:    str   # Report title
-    summary:  str   # Executive summary (1-2 sentences)
-    findings: list  # List of key findings (strings)
-    sources:  list  # List of source URLs or references
-    status:   str   # "complete" | "partial" | "failed"
+    title:    str        # Report title
+    summary:  str        # Executive summary (1-2 sentences)
+    findings: List[str]  # List of key findings (strings)
+    sources:  List[str]  # List of source URLs or references
+    status:   str        # "complete" | "partial" | "failed"
 
 
 def validate_json_output(raw_output: str, schema: type = StructuredReport) -> Optional[dict]:

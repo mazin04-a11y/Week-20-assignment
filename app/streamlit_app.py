@@ -179,7 +179,6 @@ if st.session_state["debug_mode"]:
             "os"       : platform.system(),
             "openai_key_set"   : bool(os.environ.get("OPENAI_API_KEY")),
             "serper_key_set"   : bool(os.environ.get("SERPER_API_KEY")),
-            "anthropic_key_set": bool(os.environ.get("ANTHROPIC_API_KEY")),
         })
 
     if st.session_state["last_result"]:
